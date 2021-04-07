@@ -5,13 +5,12 @@ interface
 uses
   System.SysUtils, System.Types, System.UITypes, System.Classes, System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Objects,
-  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ListBox;
+  FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ListBox, FMX.Ani;
 
 type
   TfrmPrincipal = class(TForm)
     rect_tb: TRectangle;
     img_menu: TImage;
-    cir_img_menu: TCircle;
     Label1: TLabel;
     lay_menu: TLayout;
     rect_icons: TRectangle;
@@ -52,7 +51,22 @@ type
     Circle7: TCircle;
     Image7: TImage;
     Label10: TLabel;
+    lay_logout: TLayout;
+    Line2: TLine;
+    lay_btn_logout: TLayout;
+    Circle8: TCircle;
+    Image8: TImage;
+    Label11: TLabel;
+    FloatAnimation1: TFloatAnimation;
+    cir_img_menu: TCircle;
+    procedure cir_img_menuClick(Sender: TObject);
+    procedure rect_btn_lessClick(Sender: TObject);
+    procedure FloatAnimation1Finish(Sender: TObject);
   private
+    procedure EfeitoClick(obj: TObject);
+    procedure AbreMenu;
+    procedure FecheMenu;
+
     { Private declarations }
   public
     { Public declarations }
@@ -64,5 +78,72 @@ var
 implementation
 
 {$R *.fmx}
+
+procedure TfrmPrincipal.cir_img_menuClick(Sender: TObject);
+begin
+  EfeitoClick(Sender);
+  AbreMenu;
+
+end;
+procedure TfrmPrincipal.rect_btn_lessClick(Sender: TObject);
+begin
+  EfeitoClick(Sender);
+  FecheMenu;
+end;
+
+
+procedure TfrmPrincipal.AbreMenu;
+begin
+  lay_menu.Align := TAlignLayout.None;
+  lay_menu.Position.X := - frmPrincipal.Width;
+  lay_menu.tag := 1;
+
+  FloatAnimation1.StartValue := - frmPrincipal.Width;
+  FloatAnimation1.StopValue  := 0;
+  FloatAnimation1.Inverse := False;
+  lay_menu.Visible := True;
+  FloatAnimation1.Start;
+
+
+end;
+
+procedure TfrmPrincipal.FecheMenu;
+begin
+  lay_menu.Align := TAlignLayout.None;
+  lay_menu.Position.X := 0;
+  lay_menu.tag := 0;
+  FloatAnimation1.StartValue := - frmPrincipal.Width;
+  FloatAnimation1.StopValue  := 0;
+  FloatAnimation1.Inverse := True;
+  FloatAnimation1.Start;
+
+
+end;
+
+
+
+procedure TfrmPrincipal.FloatAnimation1Finish(Sender: TObject);
+begin
+  if lay_menu.tag = 0 then begin
+    lay_menu.Visible := false;
+  end;
+
+  lay_menu.Align := TAlignLayout.Contents;
+end;
+
+procedure TfrmPrincipal.EfeitoClick(obj : TObject);
+begin
+  if obj.ClassName = TImage.ClassName then begin
+    TImage(obj).Opacity := 0.7;
+    TImage(obj).AnimateFloat('Opacity',1,0.4,TAnimationType.InOut,TInterpolationType.Circular);
+  end;
+  if obj.ClassName = TRectangle.ClassName then begin
+    TRectangle(obj).Opacity := 0.7;
+    TRectangle(obj).AnimateFloat('Opacity',1,0.4,TAnimationType.InOut,TInterpolationType.Circular);
+
+  end;
+end;
+
+
 
 end.
